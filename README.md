@@ -135,4 +135,4 @@ Beiträge sind willkommen! Bitte lesen Sie zunächst die Beitragsrichtlinien.
 
 ## Lizenz
 
-Dieses Projekt ist unter der ISC-Lizenz lizenziert. Weitere Details finden Sie in der [LICENSE](LICENSE)-Datei.
+Dieses Projekt ist unter der Unlicensed-Lizenz lizenziert. Weitere Details finden Sie in der [LICENSE](LICENSE)-Datei.
