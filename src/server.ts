@@ -81,7 +81,12 @@ const server = new SMTPServer({
             }
     
             try {
-                const sender = parsed.from?.text || process.env.SENDER;
+                // Immer den konfigurierten SENDER aus der .env verwenden
+                const sender = process.env.SENDER;
+                if (!sender) {
+                    throw new Error('SENDER environment variable is not configured');
+                }
+                
                 const recipients = Array.isArray(parsed.to) 
                     ? parsed.to.map(recipient => recipient.text)
                     : [parsed.to.text];
@@ -105,10 +110,15 @@ const server = new SMTPServer({
                 };
     
                 // Senden der E-Mail über Graph API
-                await client.api('/users/' + sender + '/sendMail')
+                // Extrahieren der E-Mail-Adresse aus dem SENDER (falls es ein "Name <email>" Format ist)
+                const senderEmail = sender.includes('<') && sender.includes('>') 
+                    ? sender.match(/<([^>]+)>/)?.[1] || sender
+                    : sender;
+                
+                await client.api('/users/' + encodeURIComponent(senderEmail) + '/sendMail')
                     .post({ message });
     
-                console.log(`[${new Date().toISOString()}] Mail from Server ${session.remoteAddress} has been forwarded via ${sender} to ${recipients.join(', ')}`);
+                console.log(`[${new Date().toISOString()}] Mail from Server ${session.remoteAddress} has been forwarded via ${senderEmail} to ${recipients.join(', ')}`);
     
                 callback();
             } catch (error) {
